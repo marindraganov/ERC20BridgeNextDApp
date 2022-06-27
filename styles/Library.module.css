@@ -1,0 +1,34 @@
+.library-form .library-books{
+    display: flex;
+    /* flex-direction: column; */
+    margin: 5px;
+  }
+
+  .library-books {
+    border: 1px solid green;
+  }
+
+  form {
+    margin-top: 10px
+  }
+
+  .button-wrapper {
+    margin: 20px;
+  }
+  
+  .transactionLink {
+    text-decoration: underline;
+    color: blue;
+  }
+
+  .error {
+    color: red;
+  }
+
+  .info-line {
+    display: inline-block;
+    border: 1px solid grey;
+    border-radius: 5px;
+    padding: 2px;
+    margin: 2px;
+  }
