@@ -1,10 +1,9 @@
-import { shortenHex } from "../util";
+import { shortenHex, tokens } from "../util";
 
 const TokenSelector = ({setSelectedToken}) => {
-    const tokens = [{symbol: "COOL", address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"}]
 
     const setSelected = (select) => {
-        setSelectedToken(select.target.value)
+        setSelectedToken(tokens.find((t) => t.address == select.target.value))
     }
 
   return (
@@ -16,7 +15,7 @@ const TokenSelector = ({setSelectedToken}) => {
                     <option key={index} value={token.address}>
                         {token.symbol} {shortenHex(token.address)}</option>
                 )} 
-          
+                <option value='-1'>None</option>
             </select>
         </label>
     </div>

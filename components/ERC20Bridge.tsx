@@ -5,12 +5,14 @@ import useERC20BridgeContract from "../hooks/useERC20BridgeContract";
 import LoadingSpinner from "./LoadingSpinner"
 import { formatEtherscanLink, shortenHex } from "../util";
 import { utils } from "ethers";
-import { ethers } from "ethers";
 import TokenSelector from './TokenSelector';
 import ChainSelector from './ChainSelector';
 import TokenBalance from "../components/TokenBalance";
 import ApproveTokenAllowence from "../components/ApproveTokenAllowence";
-import MintToken from "./MintToken";
+import MintWToken from "./MintWToken";
+import BurnWToken from "./BurnWToken";
+import UnlockNativeToken from "./UnlockNativeToken";
+import BridgeToken from "./BridgeToken";
 
 type ERC20BridgeContract = {
   contractAddress: string;
@@ -21,55 +23,41 @@ const ERC20Bridge = ({ contractAddress } : ERC20BridgeContract) => {
   const erc20BridgeContract = useERC20BridgeContract(contractAddress);
 
   const [isWrappedToken, setIsWrappedToken] = useState(null);
-  const [selectedToken, setSelectedToken] = useState('');
+  const [selectedToken, setSelectedToken] = useState(null);
   const [bridgeAmount, setBridgeAmount] = useState(0);
   const [bridgeTargetChain, setBridgeTargetChain] = useState(0);
-  const [numberOfCopies, setNumberOfCopies] = useState<number | undefined>(0);
   const [txError, setTxError] = useState(null);
   const [transactionInProgress, setTransactionInProgress] = useState(null);
-  const [books, setBooks] = useState<[]>([]);
 
   useEffect(() => {
-
+    kk();
   },[])
 
-  const getIsWrappedToken = async (tokenAddress) => {
-    const nativeTknAddress = await erc20BridgeContract.getNativeTokenAddress(tokenAddress);
-    const isWTkn = nativeTknAddress ? true : false;
-    setIsWrappedToken(isWTkn);
-  }
-
-  const bridgeToken = async () => {
-    executeTransaction(
-      () => erc20BridgeContract.lockNativeToken(selectedToken, utils.parseUnits(bridgeAmount.toString(), 18), bridgeTargetChain),
-      () => {resetBridgeToken();})
+  const kk = async () => {
   }
 
   const executeTransaction = async (txFunc, successCallcack) => {
     const tx = await txFunc()
       .catch((e)=>
-        setTxError(e.error ? e.error.message : e.message)
+        setTxError(e.error ? e.error.message + e.error?.data.message : e.message)
       );
 
     if(tx) {
       setTransactionInProgress(tx);
-      var txReceipt = await tx.wait();
+      const txReceipt = await tx.wait();
+      await new Promise(r => setTimeout(r, 2000));
       setTransactionInProgress(null);
 
       if(txReceipt.status === 1) { //success
         setTxError('');
         if(successCallcack) {
-          successCallcack();
+          successCallcack(tx, txReceipt);
         }
       }
       else {
         setTxError('The transaction failed!');
       }
     }
-  }
-
-  const bridgeAmountInput = (input) => {
-    setBridgeAmount(input.target.value)
   }
 
   const resetBridgeToken = async () => {
@@ -80,21 +68,20 @@ const ERC20Bridge = ({ contractAddress } : ERC20BridgeContract) => {
     <div className="bridge flex-container">
         <div className="row">
             <TokenSelector setSelectedToken={setSelectedToken} />
-            <TokenBalance tokenAddress={selectedToken} bridgeAddress={contractAddress}/>
-            <ApproveTokenAllowence tokenAddress={selectedToken} bridgeAddress={contractAddress} executeTx={executeTransaction}/>
-            <div className="flex-item">
-                <div className="flex-item border-top">
-                    <label>
-                        Amount:
-                        <input onChange={bridgeAmountInput} value={bridgeAmount} type="number" name="bookIdToRent" />
-                    </label>
-                </div>
-                <ChainSelector setSelectedChain={setBridgeTargetChain}/>
-                <div className="flex-item border-bottom">
-                    <button onClick={bridgeToken}>Bridge Token</button>
-                </div>
-            </div>
-            <MintToken tokenAddress={selectedToken} bridgeContract={erc20BridgeContract} executeTx={executeTransaction}/>
+            {selectedToken && selectedToken.isNative &&
+            (<>
+              <TokenBalance tokenAddress={selectedToken.address} bridgeAddress={contractAddress}/>
+              <ApproveTokenAllowence tokenAddress={selectedToken.address} bridgeAddress={contractAddress} executeTx={executeTransaction}/>
+              <BridgeToken tokenAddress={selectedToken.address} bridgeContract={erc20BridgeContract} executeTx={executeTransaction}
+                currentChainId={chainId} />
+              <UnlockNativeToken tokenAddress={selectedToken.address} bridgeContract={erc20BridgeContract} executeTx={executeTransaction}/>
+            </> )}
+            {selectedToken && !selectedToken.isNative &&
+            (<>
+              <TokenBalance tokenAddress={selectedToken.address} bridgeAddress={contractAddress}/>
+              <BurnWToken tokenAddress={selectedToken.address} bridgeContract={erc20BridgeContract} executeTx={executeTransaction}/>
+            </> )}
+            <MintWToken bridgeContract={erc20BridgeContract} executeTx={executeTransaction}/>
             {txError && (
                 <div className="error"> {txError} </div>
             )}

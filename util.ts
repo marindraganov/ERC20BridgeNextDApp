@@ -7,6 +7,11 @@ export function shortenHex(hex: string, length = 4) {
   )}`;
 }
 
+export const tokens = [
+  {symbol: "COOL", address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512", isNative: true},
+  {symbol: "WCOOL", address: "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be", isNative: false}
+]
+
 const ETHERSCAN_PREFIXES = {
   1: "",
   3: "ropsten.",

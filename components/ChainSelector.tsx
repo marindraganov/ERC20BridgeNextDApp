@@ -1,6 +1,6 @@
 import { NETWORKS_NAMES } from "../constants";
 
-const ChainSelector = ({setSelectedChain}) => {
+const ChainSelector = ({setSelectedChain, currentChainID}) => {
     const setSelected = (select) => {
         setSelectedChain(select.target.value)
     }
@@ -10,8 +10,9 @@ const ChainSelector = ({setSelectedChain}) => {
         <label>TargetChain
             <select defaultValue={'DEFAULT'} onChange={setSelected}>
                 <option disabled value='DEFAULT'>-select-</option>
-                {Object.keys(NETWORKS_NAMES).map((key, index) => 
-                    <option key={index} value={key}>
+                {Object.keys(NETWORKS_NAMES).filter(key => true)//key != currentChainID)
+                    .map((key, index) => 
+                        <option key={index} value={key}>
                         {key} {NETWORKS_NAMES[key]}</option>
                 )} 
 
