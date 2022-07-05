@@ -30,11 +30,7 @@ const ERC20Bridge = ({ contractAddress } : ERC20BridgeContract) => {
   const [transactionInProgress, setTransactionInProgress] = useState(null);
 
   useEffect(() => {
-    kk();
   },[])
-
-  const kk = async () => {
-  }
 
   const executeTransaction = async (txFunc, successCallcack) => {
     const tx = await txFunc()
@@ -74,13 +70,14 @@ const ERC20Bridge = ({ contractAddress } : ERC20BridgeContract) => {
               <ApproveTokenAllowence tokenAddress={selectedToken.address} bridgeAddress={contractAddress} executeTx={executeTransaction}/>
               <BridgeToken tokenAddress={selectedToken.address} bridgeContract={erc20BridgeContract} executeTx={executeTransaction}
                 currentChainId={chainId} />
-              <UnlockNativeToken tokenAddress={selectedToken.address} bridgeContract={erc20BridgeContract} executeTx={executeTransaction}/>
             </> )}
             {selectedToken && !selectedToken.isNative &&
             (<>
               <TokenBalance tokenAddress={selectedToken.address} bridgeAddress={contractAddress}/>
-              <BurnWToken tokenAddress={selectedToken.address} bridgeContract={erc20BridgeContract} executeTx={executeTransaction}/>
+              <BurnWToken tokenAddress={selectedToken.address} bridgeContract={erc20BridgeContract} executeTx={executeTransaction}
+                currentChainId={chainId} />
             </> )}
+            <UnlockNativeToken bridgeContract={erc20BridgeContract} executeTx={executeTransaction}/>
             <MintWToken bridgeContract={erc20BridgeContract} executeTx={executeTransaction}/>
             {txError && (
                 <div className="error"> {txError} </div>

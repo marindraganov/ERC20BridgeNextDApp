@@ -98,6 +98,12 @@
         "internalType": "address",
         "name": "nativeTknAddress",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "nativeChainId",
+        "type": "uint256"
       }
     ],
     "name": "TokenBurned",
@@ -202,6 +208,11 @@
         "type": "address"
       },
       {
+        "internalType": "uint256",
+        "name": "nativeChainId",
+        "type": "uint256"
+      },
+      {
         "internalType": "string",
         "name": "tknName",
         "type": "string"
@@ -253,6 +264,21 @@
         "internalType": "bytes32",
         "name": "txHash",
         "type": "bytes32"
+      },
+      {
+        "internalType": "uint8",
+        "name": "v",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "r",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
       }
     ],
     "name": "claimUnlock",
@@ -302,6 +328,11 @@
         "type": "address"
       },
       {
+        "internalType": "uint256",
+        "name": "nativeChainId",
+        "type": "uint256"
+      },
+      {
         "internalType": "string",
         "name": "tknName",
         "type": "string"
@@ -326,25 +357,6 @@
       }
     ],
     "stateMutability": "pure",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "wERC20Adress",
-        "type": "address"
-      }
-    ],
-    "name": "getNativeTokenAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "adr",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -385,8 +397,47 @@
     "inputs": [
       {
         "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "nativeTknAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "txHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getUnlockClaimHash",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "erc20Adress",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "nativeChainId",
+        "type": "uint256"
       }
     ],
     "name": "getWTokenAddress",

@@ -1,32 +1,22 @@
 import { useState, useEffect } from "react";
 import { utils, ethers } from "ethers";
 import ChainSelector from './ChainSelector';
+import { VALIDATOR_ADDRESS } from "../constants";
 
 function BridgeToken({tokenAddress, bridgeContract, executeTx, currentChainId}) {
     const lockEventAbi = ["event TokenLocked(address indexed user, uint amount, address tknAddress, string tknName, string tknSymbol,uint targetChainID)"]
     const [bridgeTargetChain, setBridgeTargetChain] = useState(0);
     const [bridgeAmount, setBridgeAmount] = useState(0);
-    const [claimUrl, setClaimUrl] = useState();
+    const [claimUrl, setClaimUrl] = useState("");
 
     const bridgeToken = async () => {
         executeTx(
           () => bridgeContract.lockNativeToken(tokenAddress, utils.parseUnits(bridgeAmount.toString(), 18), bridgeTargetChain),
           (tx, txReceipt) => 
           {
-            const lockEvent = getLockEvent(tx.hash, txReceipt);
+            setClaimUrl(`${VALIDATOR_ADDRESS}/mint?sourceChainId=${currentChainId}&txHash=${tx.hash}`)
             resetBridgeToken();
           })
-    }
-
-    const getLockEvent = (txHash, txReceipt) => {
-        const iface = new ethers.utils.Interface(lockEventAbi);
-        const log = iface.parseLog(txReceipt.logs[2]);
-
-        const event = {
-            targetChainID: log.args.targetChainID.toString()
-        }
-
-        setClaimUrl(`http://localhost:8080/mint?sourceChainId=${event.targetChainID}&txHash=${txHash}`)
     }
 
     const bridgeAmountInput = (input) => {

@@ -1,33 +1,50 @@
 import { useState, useEffect } from "react";
-import { utils } from "ethers";
+import { ethers } from "ethers";
+import { parseBalance, shortenHex } from "../util";
 
-const UnlockNativeToken = ({tokenAddress, bridgeContract, executeTx}) => {
-  const [amount, setAmount] = useState(0);
-  const [hash, setHash] = useState("");
+type Claim = {
+  amount: number,
+  nativeTknAddress: string,
+  txHash: string,
+  v: string,
+  r: string,
+  s: string,
+};
+
+const UnlockNativeToken = ({bridgeContract, executeTx}) => {
+  const [claimTxt, setClaimTxt] = useState("");
+  const [claim, setClaim] = useState<Claim>(null);
 
   useEffect(() => {
-    bridgeContract.on('Mint', (sender, amount, wTokenAddress) => {
-    })
+
   },[])
 
   const claimUnlock = async () => {
-    const hashBytes = utils.formatBytes32String(hash);
     executeTx(
-      () => bridgeContract.claimUnlock(utils.parseUnits(amount.toString(), 18), tokenAddress, hashBytes), 
+      () => bridgeContract.claimUnlock(
+                            claim.amount, 
+                            claim.nativeTknAddress,
+                            claim.txHash,
+                            claim.v,
+                            claim.r,
+                            claim.s), 
       () => {resetInputs();})
   }
 
   const resetInputs = async () => {
-    setAmount(0);
-    setHash("");
+    setClaim(null);
+    setClaimTxt("");
   }
 
-  const amountInput = (input) => {
-    setAmount(input.target.value)
-  }
-
-  const hashInput = (input) => {
-    setHash(input.target.value)
+  const claimInput = (input) => {
+    setClaimTxt(input.target.value);
+    try{
+      const claimObj = JSON.parse(input.target.value)
+      setClaim(claimObj)
+    }
+    catch { 
+      setClaim(null)
+    }
   }
 
 return (
@@ -35,16 +52,32 @@ return (
     <div className="flex-item border-top">
       <div className="action-header">Claim Unlock Native Token</div>
       <label>
-          Amount: 
-          <input onChange={amountInput} value={amount} type="number" />
-      </label>
-    </div>
-    <div className="flex-item">
-      <label>
-          TxHash: 
-          <input onChange={hashInput} value={hash} type="text" />
-      </label>
-    </div>
+            Paste Claim: 
+            <input onChange={claimInput} value={claimTxt} type="text" />
+        </label>
+      </div>
+      { claim && (
+        <>
+        <div className="flex-item">
+          <label>
+              Amount: 
+              <input disabled value={parseBalance(ethers.BigNumber.from(claim?.amount))} type="text" />
+          </label>
+        </div>
+        <div className="flex-item">
+          <label>
+              ERC20Adress: 
+              <input disabled value={shortenHex(claim?.nativeTknAddress, 9)} type="text" />
+          </label>
+        </div>
+        <div className="flex-item">
+          <label>
+              ClaimTxHash: 
+              <input disabled value={shortenHex(claim?.txHash, 9)} type="text" />
+          </label>
+        </div>
+        </>
+      )}
     <div className="flex-item border-bottom">
         <button onClick={claimUnlock}>Claim Unlock</button>
     </div>

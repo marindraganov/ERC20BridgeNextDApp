@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ethers, utils } from "ethers";
+import { ethers } from "ethers";
 import { parseBalance, shortenHex } from "../util";
 import { NETWORKS_NAMES } from "../constants";
 
@@ -10,6 +10,7 @@ type Claim = {
   tknSymbol: string,
   txHash: string,
   targetChainID: number,
+  nativeChainId: number,
   v: string,
   r: string,
   s: string,
@@ -17,30 +18,30 @@ type Claim = {
 
 const MintWToken = ({bridgeContract, executeTx}) => {
     const [claimTxt, setClaimTxt] = useState("");
+    const [message, setMessage] = useState("");
     const [claim, setClaim] = useState<Claim>(null);
-    const [hash, setHash] = useState("");
 
     useEffect(() => {
-      bridgeContract.on('Mint', (sender, amount, wTokenAddress) => {
-        console.log(sender);
-        console.log(amount);
-        console.log(wTokenAddress);
+      bridgeContract.on('Mint', (sender, amount, wTokenAddress, ev) => {
+        setMessage(`Minted: ${parseBalance(amount)} ${wTokenAddress}`);
       })
     },[])
 
     const claimMint = async () => {
-      const hashBytes = utils.formatBytes32String(hash);
       executeTx(
         () => bridgeContract.claimMint(
                               claim.amount, 
-                              claim.tknAddress, 
+                              claim.tknAddress,
+                              claim.nativeChainId,
                               claim.tknName, 
                               claim.tknSymbol,
                               claim.txHash,
                               claim.v,
                               claim.r,
                               claim.s), 
-        () => {resetInputs();})
+        (tx, txReceipt) => {
+          resetInputs();
+        })
     }
 
     const resetInputs = async () => {
@@ -53,14 +54,11 @@ const MintWToken = ({bridgeContract, executeTx}) => {
       try{
         const claimObj = JSON.parse(input.target.value)
         setClaim(claimObj)
+        setMessage("")
       }
       catch { 
         setClaim(null)
       }
-    }
-
-    const hashInput = (input) => {
-      setHash(JSON.parse(input.target.value))
     }
 
   return (
@@ -100,6 +98,7 @@ const MintWToken = ({bridgeContract, executeTx}) => {
         </div>
         </>
       )}
+      {message && (<div className="flex-item">{message}</div>)}
       <div className="flex-item border-bottom">
           <button onClick={claimMint}>Claim Mint</button>
       </div>

@@ -9,6 +9,8 @@
     31337: "http://localhost:8545"
   };
 
+  export const VALIDATOR_ADDRESS = "http://localhost:8080"
+
   // Network chain ids
   export const supportedMetamaskNetworks = [1, 3, 4, 5, 42, 31337];
   export const NETWORKS_NAMES= { 
