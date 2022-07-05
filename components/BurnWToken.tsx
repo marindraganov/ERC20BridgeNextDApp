@@ -13,7 +13,7 @@ const BurnWToken = ({tokenAddress, bridgeContract, executeTx, currentChainId}) =
       executeTx(
         () => bridgeContract.burnWrappedToken(tokenAddress, utils.parseUnits(amount.toString(), 18)), 
         (tx, txReceipt) => {
-            setClaimUrl(`${VALIDATOR_ADDRESS}/burn?sourceChainId=${currentChainId}&txHash=${tx.hash}`)
+            setClaimUrl(`${VALIDATOR_ADDRESS}/unlock?sourceChainId=${currentChainId}&txHash=${tx.hash}`)
             resetInputs();
         })
     }
