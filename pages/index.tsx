@@ -1,4 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
+import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Account from "../components/Account";
@@ -9,7 +10,7 @@ import { BRIDGE_ADDRESS } from "../constants";
 import useEagerConnect from "../hooks/useEagerConnect";
 
 function Home() {
-  const { account, library, chainId } = useWeb3React();
+  const { account, library, chainId} = useWeb3React();
 
   const triedToEagerConnect = useEagerConnect();
 
@@ -33,17 +34,17 @@ function Home() {
       </header>
 
       <main>
-        <h1>
+        <h3>
           <a href="">
             ERC20 TokenBridgeDApp
           </a>
-        </h1>
+        </h3>
 
         {isConnected && (
           <section>
             <NetworkInfo chainID={chainId}/>
             <NativeCurrencyBalance />
-            <ERC20Bridge contractAddress={BRIDGE_ADDRESS} />
+            <ERC20Bridge contractAddress={BRIDGE_ADDRESS[chainId]} chainId={chainId}/>
           </section>
         )}
       </main>

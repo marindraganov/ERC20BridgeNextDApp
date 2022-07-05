@@ -457,6 +457,25 @@
         "internalType": "address",
         "name": "erc20Adress",
         "type": "address"
+      }
+    ],
+    "name": "isWrappedToken",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "isWrapped",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "erc20Adress",
+        "type": "address"
       },
       {
         "internalType": "uint256",

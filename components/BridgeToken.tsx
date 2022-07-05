@@ -4,7 +4,6 @@ import ChainSelector from './ChainSelector';
 import { VALIDATOR_ADDRESS } from "../constants";
 
 function BridgeToken({tokenAddress, bridgeContract, executeTx, currentChainId}) {
-    const lockEventAbi = ["event TokenLocked(address indexed user, uint amount, address tknAddress, string tknName, string tknSymbol,uint targetChainID)"]
     const [bridgeTargetChain, setBridgeTargetChain] = useState(0);
     const [bridgeAmount, setBridgeAmount] = useState(0);
     const [claimUrl, setClaimUrl] = useState("");
@@ -37,7 +36,7 @@ function BridgeToken({tokenAddress, bridgeContract, executeTx, currentChainId}) 
                     <input onChange={bridgeAmountInput} value={bridgeAmount} type="number" />
                 </label>
             </div>
-            <ChainSelector setSelectedChain={setBridgeTargetChain} currentChainID={currentChainId} />
+            <ChainSelector setSelectedChain={setBridgeTargetChain} selectedChain={bridgeTargetChain} currentChainID={currentChainId} />
             {claimUrl && <a className="link" href={claimUrl} target="_blank">Get Signed Claim</a>}
             <div className="flex-item border-bottom">
                 <button onClick={bridgeToken}>Bridge Token</button>

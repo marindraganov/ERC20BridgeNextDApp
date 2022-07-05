@@ -75,7 +75,7 @@ const MintWToken = ({bridgeContract, executeTx}) => {
         <div className="flex-item">
           <label>
               Amount: 
-              <input disabled value={parseBalance(ethers.BigNumber.from(claim?.amount))} type="text" />
+              <input disabled value={parseBalance(ethers.BigNumber.from(claim?.amount ?? 0))} type="text" />
           </label>
         </div>
         <div className="flex-item">
@@ -87,7 +87,7 @@ const MintWToken = ({bridgeContract, executeTx}) => {
         <div className="flex-item">
           <label>
               ClaimTxHash: 
-              <input disabled value={shortenHex(claim?.txHash)} type="text" />
+              <input disabled value={shortenHex(claim?.txHash ?? "", 9)} type="text" />
           </label>
         </div>
         <div className="flex-item">

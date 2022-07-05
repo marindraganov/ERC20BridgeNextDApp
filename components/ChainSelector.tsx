@@ -1,6 +1,8 @@
 import { NETWORKS_NAMES } from "../constants";
+import { useState } from "react";
 
-const ChainSelector = ({setSelectedChain, currentChainID}) => {
+const ChainSelector = ({setSelectedChain, selectedChain, currentChainID}) => {
+
     const setSelected = (select) => {
         setSelectedChain(select.target.value)
     }
@@ -8,9 +10,9 @@ const ChainSelector = ({setSelectedChain, currentChainID}) => {
     return (
     <div className="flex-item">
         <label>TargetChain
-            <select defaultValue={'DEFAULT'} onChange={setSelected}>
-                <option disabled value='DEFAULT'>-select-</option>
-                {Object.keys(NETWORKS_NAMES).filter(key => true)//key != currentChainID)
+            <select value={selectedChain} onChange={setSelected}>
+                <option disabled value="0">-select-</option>
+                {Object.keys(NETWORKS_NAMES).filter(key => key != currentChainID)
                     .map((key, index) => 
                         <option key={index} value={key}>
                         {key} {NETWORKS_NAMES[key]}</option>

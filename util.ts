@@ -7,9 +7,22 @@ export function shortenHex(hex: string, length = 4) {
   )}`;
 }
 
-export const tokens = [
-  {symbol: "COOL", address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512", isNative: true}
-]
+export const tokensHolder = {
+  get: function get(chainID) {
+    if(!window.localStorage.tokens) localStorage.tokens = "[]";
+    
+    const records = JSON.parse(localStorage.tokens);
+    return records.filter((t) => t.chainID == chainID)
+  },
+  add: function get(token) {
+    console.log("add")
+    const records = JSON.parse(localStorage.tokens);
+    records.push(token);
+    localStorage.tokens = JSON.stringify(records);
+    return records;
+  }
+}
+
 
 const ETHERSCAN_PREFIXES = {
   1: "",
