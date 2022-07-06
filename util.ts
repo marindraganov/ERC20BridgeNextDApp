@@ -10,12 +10,11 @@ export function shortenHex(hex: string, length = 4) {
 export const tokensHolder = {
   get: function get(chainID) {
     if(!window.localStorage.tokens) localStorage.tokens = "[]";
-    
+
     const records = JSON.parse(localStorage.tokens);
     return records.filter((t) => t.chainID == chainID)
   },
   add: function get(token) {
-    console.log("add")
     const records = JSON.parse(localStorage.tokens);
     records.push(token);
     localStorage.tokens = JSON.stringify(records);

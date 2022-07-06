@@ -50,12 +50,10 @@ const MintWToken = ({bridgeContract, executeTx}) => {
       let abi = ["event Mint(address indexed user, uint amount, address wTknAddress)"]
       let iface = new ethers.utils.Interface(abi);
       let log;
-      debugger
       for (let i in txReceipt.logs) {
         try{
           log = iface.parseLog(txReceipt.logs[i]);
           setMessage(`Minted: ${parseBalance(log.args.amount)} ${log.args.wTknAddress}   ${shortenHex(tx.hash, 2)}`);
-          debugger;
           break;
         }
         catch{}

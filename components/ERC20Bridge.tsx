@@ -76,7 +76,6 @@ const ERC20Bridge = ({ contractAddress, chainId } : ERC20BridgeContract) => {
             transactionInProgress && (
             <>
                 <div>Waiting for transaction</div>
-                {console.log(transactionInProgress)}
                 <a className="transactionLink"
                 {...{
                     href: formatEtherscanLink("Transaction", [chainId, transactionInProgress.hash]),
