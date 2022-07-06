@@ -1,19 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { utils, ethers } from "ethers";
+import { shortenHex } from "../util";
 import ChainSelector from './ChainSelector';
 import { VALIDATOR_ADDRESS } from "../constants";
 
 function BridgeToken({tokenAddress, bridgeContract, executeTx, currentChainId}) {
     const [bridgeTargetChain, setBridgeTargetChain] = useState(0);
     const [bridgeAmount, setBridgeAmount] = useState(0);
-    const [claimUrl, setClaimUrl] = useState("");
+    const [claimInfo, setClaimInfo] = useState(null);
 
     const bridgeToken = async () => {
         executeTx(
           () => bridgeContract.lockNativeToken(tokenAddress, utils.parseUnits(bridgeAmount.toString(), 18), bridgeTargetChain),
           (tx, txReceipt) => 
           {
-            setClaimUrl(`${VALIDATOR_ADDRESS}/mint?sourceChainId=${currentChainId}&txHash=${tx.hash}`)
+            const url = `${VALIDATOR_ADDRESS}/mint?sourceChainId=${currentChainId}&txHash=${tx.hash}`;
+            setClaimInfo({url: url, txHash: shortenHex(tx.hash)})
             resetBridgeToken();
           })
     }
@@ -37,7 +39,7 @@ function BridgeToken({tokenAddress, bridgeContract, executeTx, currentChainId}) 
                 </label>
             </div>
             <ChainSelector setSelectedChain={setBridgeTargetChain} selectedChain={bridgeTargetChain} currentChainID={currentChainId} />
-            {claimUrl && <a className="link" href={claimUrl} target="_blank">Get Signed Claim</a>}
+            {claimInfo && <a className="link" href={claimInfo.url} target="_blank">Get Signed Claim {claimInfo.txHash}</a>}
             <div className="flex-item border-bottom">
                 <button onClick={bridgeToken}>Bridge Token</button>
             </div>

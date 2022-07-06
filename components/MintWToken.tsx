@@ -22,8 +22,9 @@ const MintWToken = ({bridgeContract, executeTx}) => {
     const [claim, setClaim] = useState<Claim>(null);
 
     useEffect(() => {
+
       bridgeContract.on('Mint', (sender, amount, wTokenAddress, ev) => {
-        setMessage(`Minted: ${parseBalance(amount)} ${wTokenAddress}`);
+        //setMessage(`Minted: ${parseBalance(amount)} ${wTokenAddress}`);
       })
     },[])
 
@@ -40,8 +41,25 @@ const MintWToken = ({bridgeContract, executeTx}) => {
                               claim.r,
                               claim.s), 
         (tx, txReceipt) => {
+          setMessageFromReceipt(tx, txReceipt);
           resetInputs();
         })
+    }
+
+    const setMessageFromReceipt = async (tx, txReceipt) => {
+      let abi = ["event Mint(address indexed user, uint amount, address wTknAddress)"]
+      let iface = new ethers.utils.Interface(abi);
+      let log;
+      debugger
+      for (let i in txReceipt.logs) {
+        try{
+          log = iface.parseLog(txReceipt.logs[i]);
+          setMessage(`Minted: ${parseBalance(log.args.amount)} ${log.args.wTknAddress}   ${shortenHex(tx.hash, 2)}`);
+          debugger;
+          break;
+        }
+        catch{}
+      }
     }
 
     const resetInputs = async () => {
