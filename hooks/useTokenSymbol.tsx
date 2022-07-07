@@ -29,7 +29,5 @@ export default function useTokenSymbol(
     }
   );
 
-  useKeepSWRDataLiveAsBlocksArrive(result.mutate);
-
   return result.data ?? "";
 }

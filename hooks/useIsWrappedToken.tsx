@@ -32,6 +32,5 @@ export default function useIsTokenWrapped(
     }
   );
 
-  useKeepSWRDataLiveAsBlocksArrive(result.mutate);
   return result.data ?? "";
 }
